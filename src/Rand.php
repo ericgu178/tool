@@ -88,4 +88,16 @@ class Rand extends Base
         }
         return $telephone;
     }
+
+    /**
+     * 返回格式化日期
+     *
+     * @param string $format
+     * @return string
+     * @author EricGU178
+     */
+    static public function formatDate(string $format = 'YmdHis'):string
+    {
+        return date($format);
+    }
 }
