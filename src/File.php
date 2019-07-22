@@ -9,31 +9,17 @@ use tool\Rand;
  */
 class File extends Base
 {
-    static protected $dir  =   null;   //  文件夹目录
 
-    static protected $write_data = null; // 写入数据
-
-    static public function dir($dir)
-    {
-        self::$dir = $dir;
-        return self;
-    }
-
-    public function setData(string $data, $data_type = 0)
-    {
-        if ($data_type == 1) {
-            $data = file_get_contents($data);
-        }
-        self::$write_data = $data;
-        return self;
-    }
-
-    public function save($filename)
+    static public function create($dir,$filename,$data)
     {
         $date = Rand::formatDate('Ymd');
-        $file_path = self::$dir . '/' . $date . '/' . $filename;
-        $fp = fopen($file_path, "a") or die("Unable to open file!");
-        fwrite($fp, self::$write_data);
+        $directory = $dir . '/' . $date;
+        $file_path = $directory . '/' . $filename;
+        if (!is_dir($directory)) {
+            mkdir($directory,0777);
+        }
+        $fp = fopen($file_path , 'a') or die("Unable to open file!");
+        fwrite($fp, $data);
         fclose($fp);
         return $file_path;
     }
