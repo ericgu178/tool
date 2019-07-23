@@ -30,6 +30,38 @@ class File extends Base
     }
 
     /**
+     * 通过字节流复制文件
+     *
+     * @param string $path
+     * @param string $to_file
+     * @return boolean
+     * @author EricGU178
+     */
+    static public function copyFile(string $path, string $to_file):boolean
+    {
+        try {
+            if (!is_readable($path)) {
+                throw new \Exception('文件不可读');
+            }
+            // 没有目录 创建目录
+            if (!is_dir(dirname($to_file))) {
+                @mkdir(dirname($to_file).'/', 0777, TRUE);
+            }
+                
+            $handle1 = fopen($path, 'r'); // 被复制的文件
+            $handle2 = fopen($to_file, 'w'); // 复制的文件 
+            if ($handle1 && $handle2) {
+                stream_copy_to_stream($handle1, $handle2);
+                fclose($handle1);
+                fclose($handle2);
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 遍历文件返回文件数组
      *
      * @param string dir
