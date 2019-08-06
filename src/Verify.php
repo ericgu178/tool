@@ -232,15 +232,23 @@ class Verify extends Base
     /**
      * 验证是否为整数
      */
-    private function verifyInteger($verify_field)
+    private function verifyInteger($verify_field):bool
     {
+        if (!is_numeric($this->data[$verify_field])) {
+            return false;
+        }
+
         return !preg_match("/^[0-9][0-9]*$/" ,$this->data[$verify_field]);
     }
 
     // 大于
-    private function gt($verify_field,$ext="")
+    private function gt($verify_field , $ext = 0):bool
     {
-        if ($ext != "") {
+        if (!is_numeric($this->data[$verify_field])) {
+            return false;
+        }
+
+        if ($ext != 0) {
             if (!is_numeric($ext) && $this->data[$verify_field] <= $this->data[$ext]) {
                  return true;
             }
@@ -248,16 +256,21 @@ class Verify extends Base
                 return true;
             } 
         } else {
-            if ($this->data[$verify_field] <= 0) {
+            if ($this->data[$verify_field] <= $ext) {
                 return true;
             }
         }
+        return false;
     }
 
     // 大于等于
-    private function egt($verify_field,$ext="")
+    private function egt($verify_field , $ext = 0):bool
     {
-        if ($ext != "") {
+        if (!is_numeric($this->data[$verify_field])) {
+            return false;
+        }
+
+        if ($ext != 0) {
             if (!is_numeric($ext) && $this->data[$verify_field] < $this->data[$ext]) {
                 return true;
             }
@@ -265,16 +278,21 @@ class Verify extends Base
                 return true;
             } 
         } else {
-            if ($this->data[$verify_field] < 0) {
+            if ($this->data[$verify_field] < $ext) {
                 return true;
             }
         }
+        return false;
     }
 
     // 小于
-    private function lt($verify_field,$ext="")
+    private function lt($verify_field , $ext = 0):bool
     {
-        if ($ext != "") {
+        if (!is_numeric($this->data[$verify_field])) {
+            return false;
+        }
+
+        if ($ext != 0) {
             if (!is_numeric($ext) && $this->data[$verify_field] >= $this->data[$ext]) {
                 return true;
             }
@@ -282,16 +300,21 @@ class Verify extends Base
                 return true;
             } 
         } else {
-            if ($this->data[$verify_field] >= 0) {
+            if ($this->data[$verify_field] >= $ext) {
                 return true;
             }
         }
+        return false;
     }
 
     // 小于等于
-    private function elt($verify_field,$ext="")
+    private function elt($verify_field , $ext = 0):bool
     {
-        if ($ext != "") {
+        if (!is_numeric($this->data[$verify_field])) {
+            return false;
+        }
+
+        if ($ext != 0) {
             if (!is_numeric($ext) && $this->data[$verify_field] > $this->data[$ext]) {
                 return true;
             }
@@ -299,21 +322,27 @@ class Verify extends Base
                 return true;
             } 
         } else {
-            if ($this->data[$verify_field] > 0) {
+            if ($this->data[$verify_field] > $ext) {
                 return true;
             }
         }
+        return false;
     }
 
     // 等于
-    private function eq($verify_field,$ext)
+    private function eq($verify_field,$ext):bool
     {
+        if (!is_numeric($this->data[$verify_field])) {
+            return false;
+        }
+
         if (!is_numeric($ext) && $this->data[$verify_field] != $this->data[$ext]) {
             return true;
         }
         if (is_numeric($ext) && $this->data[$verify_field] != $ext) {
             return true;
         }
+        return false;
     }
 
     /**
