@@ -38,6 +38,36 @@ class Io extends Base
     }
 
     /**
+     * 成功调用
+     *
+     * @param array $data
+     * @return void
+     * @author EricGU178
+     */
+    public function success($data = [])
+    {
+        if (count($data) == 0) {
+            $data = ['code'=>0,'msg'=>'Success'];
+        }
+        return $this->setData($data);
+    }
+
+    /**
+     * 失败调用
+     *
+     * @param array $data
+     * @return void
+     * @author EricGU178
+     */
+    public function error($data = [])
+    {
+        if (count($data) == 0) {
+            $data = ['code'=>1,'msg'=>'Fail'];
+        }
+        return $this->setData($data);
+    }
+
+    /**
      * 设置返回数据的格式
      * @param string $formatType
      * @return $this
