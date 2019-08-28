@@ -212,4 +212,38 @@ class Tool extends Base
         $last_end   =   date('Y-m-d',strtotime("$now_start - 1 days"));  //上周结束日期
         return [$last_start,$last_end];
     }
+
+    /**
+     * 生成直接可用的可输出的数组
+     *
+     * @param string $json
+     * @param string $result
+     * @return void
+     */
+    static public function json_decode_to_string($json,$result = "[\n")
+    {
+        static $level = 1;
+        $startT = null;
+        $endT = null;
+        for ($n=0; $n<$level; $n++) {
+            $startT .= "\t";
+        }
+        for ($n=0; $n<$level-1; $n++) {
+            $endT .= "\t";
+        }
+        $arr = json_decode($json,true);
+        foreach ($arr as $key => $val) {
+            if (!is_array($val)) {
+                $result .= "$startT'$key' => '$val',\n";
+            } else {
+                $level++;
+                $result .= "$startT'$key' => " . self::json_decode_to_string(
+                    json_encode($val,256)
+                );
+                $level--;
+            }
+        }
+        $result .= "$endT],\n";
+        return $result;
+    }
 }

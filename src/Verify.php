@@ -28,7 +28,7 @@ class Verify extends Base
      * @var array
      * @author EricGU178
      */
-    protected $unRuleExt = ['require','integer','sc','phone'];
+    protected $unRuleExt = ['require','integer','sc','phone','array'];
 
     /**
      * 必须有扩展参数的数组
@@ -56,7 +56,8 @@ class Verify extends Base
         'spot'      =>  '验证是否有小数点N位',
         'in'        =>  '验证是否包含',
         'notin'     =>  '验证是否不包含',
-        'phone'     =>  '验证电话号码格式'
+        'phone'     =>  '验证电话号码格式',
+        'array'     =>  '验证是否是数组'
     ];
 
     protected $data = [];
@@ -198,6 +199,9 @@ class Verify extends Base
             case 'phone':
                 return $this->phone($verify_rule[0]);
                 break;
+            case 'array':
+                return is_array($this->data[$verify_rule[0]]);
+                break;
         }
     }
 
@@ -209,9 +213,12 @@ class Verify extends Base
      * @return void
      * @author EricGU178
      */
-    private function require($verify_field)
+    private function require($verify_field):bool
     {
-        return trim($this->data[$verify_field]) == "";
+        if (is_array($this->data[$verify_field])) {
+            return count($this->data[$verify_field]) == 0;
+        }
+        return trim((string)$this->data[$verify_field]) == '';
     }
 
     /**
