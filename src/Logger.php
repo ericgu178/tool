@@ -55,6 +55,18 @@ class Logger extends Base
     }
 
     /**
+     * 兼容一下header
+     *
+     * @param string $header
+     * @return void
+     * @author EricGU178
+     */
+    public function setHeader($header)
+    {
+        return $this->header($header);
+    }
+
+    /**
      * 设置头部信息
      *
      * @param string $header
@@ -105,7 +117,7 @@ class Logger extends Base
             // 构建写入字符串
             $str = '';
             $str .= $ip . ' | <h2 style="' . $this->getStyle($level) . ';display:inline-block">' . $this->header . "</h2>";
-            $str .= '<div>' . $content . "</div>\n";
+            $str .= $content . "\n";
             // 日志
             $fp = fopen($this->directory . '/' . $file . self::SUFFIX, "a") or die("Unable to open file!");
             fwrite($fp, $str);
@@ -128,19 +140,7 @@ class Logger extends Base
         if ($content instanceof \Exception) {
             $content = date('Y-m-d H:i:s') . ' - line ' . $content->getLine() . ' in ' . $content->getFile() . ':<span style="color:red;">' . $content->getMessage() . "</span><br>\n" . $content->getTraceAsString();
         }
-
-        if (is_array($content)) {
-            $head = '<tr><td style="text-align:center">列名</td><td>信息</td></tr>';
-            $body = '';
-            foreach ($content as $key => $value) {
-                if (is_array($value)) {
-                    $value = json_encode($value,JSON_UNESCAPED_UNICODE);
-                }
-                $body .= $key . '=>' . $value . "\n";
-            }
-            $content = '<pre>' . $body . '</pre>';
-        }
-        return $content;
+        return json_encode($content,256);
     }
 
     // 获取样式
