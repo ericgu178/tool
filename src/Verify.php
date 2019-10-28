@@ -57,7 +57,8 @@ class Verify extends Base
         'in'        =>  '验证是否包含',
         'notin'     =>  '验证是否不包含',
         'phone'     =>  '验证电话号码格式',
-        'array'     =>  '验证是否是数组'
+        'array'     =>  '验证是否是数组',
+        'email'     =>  '验证是否符合邮箱'
     ];
 
     protected $data = [];
@@ -201,6 +202,9 @@ class Verify extends Base
                 break;
             case 'array':
                 return is_array($this->data[$verify_rule[0]]);
+                break;
+            case 'email':
+                return $this->email($verify_rule[0]);
                 break;
         }
     }
@@ -392,6 +396,18 @@ class Verify extends Base
     private function phone($verify_field)
     {
         return !preg_match('/^1[345678]{1}[0-9]{9}$/',$this->data[$verify_field]);
+    }
+
+    /**
+     * 邮箱正确与否
+     *
+     * @param string $verify_field
+     * @return void
+     * @author EricGU178
+     */
+    private function email($verify_field)
+    {
+        return !preg_match('/^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@([a-zA-Z0-9]+[-.])+([a-z]{2,5})$/ims',$this->data[$verify_field]);
     }
 }
 
