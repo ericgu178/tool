@@ -9,7 +9,17 @@ use PHPMailer\PHPMailer\PHPMailer;
  */
 class Mail extends Base 
 {
-    public $mail = null;
+    public $mail = [
+        'SMTP_HOST'   => 'smtp.163.com', //SMTP服务器
+        'SMTP_PORT'   => '465', //SMTP服务器端口
+        'SMTP_USER'   => '', //SMTP服务器用户名
+        'SMTP_PASS'   => '', //SMTP服务器密码
+        'FROM_EMAIL'  => '', //发件人EMAIL
+        'FROM_NAME'   => '', //发件人名称
+        'REPLY_EMAIL' => '', //回复EMAIL（留空则为发件人EMAIL）
+        'REPLY_NAME'  => '', //回复名称（留空则为发件人名称）
+        'RECEIVE_EMAIL'  => '', //接收的邮箱
+    ];
 
     /**
      * 发送邮箱用户
@@ -20,33 +30,37 @@ class Mail extends Base
     public $to = [
         'ericgu178@gmail.com'   =>  'gxj',
     ];
+    
     /**
      * 初始化
      *
      * @author EricGU178
      */
-    public function __construct()
+    public function __construct($config)
     {
-        $this->mail = [
-            'SMTP_HOST'   => 'smtp.163.com', //SMTP服务器
-            'SMTP_PORT'   => '465', //SMTP服务器端口
-            'SMTP_USER'   => '15511604615@163.com', //SMTP服务器用户名
-            'SMTP_PASS'   => 'qwe951753', //SMTP服务器密码
-            'FROM_EMAIL'  => '15511604615@163.com', //发件人EMAIL
-            'FROM_NAME'   => 'ericgu178', //发件人名称
-            'REPLY_EMAIL' => '', //回复EMAIL（留空则为发件人EMAIL）
-            'REPLY_NAME'  => '', //回复名称（留空则为发件人名称）
-            'RECEIVE_EMAIL'  => 'ericgu178@gmail.com', //接收的邮箱
-        ];
+        if (empty($config)) {
+            throw new \Exception('请填写邮箱配置');
+        }
+        $this->mail['SMTP_HOST'] = $config['SMTP_HOST'] ?? $this->mail['SMTP_HOST'];
+        $this->mail['SMTP_PORT'] = $config['SMTP_PORT'] ?? $this->mail['SMTP_PORT'];
+        $this->mail['SMTP_USER'] = $config['SMTP_USER'] ?? \trigger_error('请填写SMTP服务器用户名');
+        $this->mail['SMTP_PASS'] = $config['SMTP_PASS'] ?? \trigger_error('请填写SMTP服务器密码');
+        $this->mail['FROM_EMAIL'] = $config['FROM_EMAIL'] ?? \trigger_error('请填写发件人EMAIL');
+        $this->mail['FROM_NAME'] = $config['FROM_NAME'] ?? \trigger_error('请填写发件人名称');
+        $this->mail['FROM_NAME'] = $config['FROM_NAME'] ?? \trigger_error('请填写发件人名称');
     }
 
     /**
      * 发送邮件
      *
+     * @param array $to 收件人
+     * @param string $subject 标题
+     * @param string $body 内容
+     * @param null $attachment 附件
      * @return void
      * @author EricGU178
      */
-    public function sendEmail($to, $name, $subject = 'test', $body = '', $attachment = null)
+    public function sendEmail($to, $subject = 'test', $body = '', $attachment = null)
     {
         $mail             = new PHPMailer(); //PHPMailer对象
         $mail->CharSet    = 'UTF-8'; //设定邮件编码，默认ISO-8859-1，如果发中文此项必须设置，否则乱码

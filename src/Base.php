@@ -12,10 +12,10 @@ class Base
 {
     static protected $instance = null;
 
-    static public function instance()
+    static public function instance($config = [])
     {
         if (static::$instance === null) {
-            static::$instance = new static;
+            static::$instance = new static($config);
         }
         
         return static::$instance;
