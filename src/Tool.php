@@ -246,4 +246,24 @@ class Tool extends Base
         $result .= "$endT],\n";
         return $result;
     }
+
+    /**
+     * 结果按创建时间从小到大排序，排序方式采用不饱和冒泡排序（推荐快速排序）
+     * @param $records
+     * @param $key
+     * @return void
+     */
+    static public function sortResult(&$records, $key = 'create_time')
+    {
+        $count = count($records);
+        for ($i = $count - 1; $i > 0; $i--) {
+            for ($j = 0; $j < $i; $j++) {
+                if ($records[$j][$key] > $records[$j + 1][$key]) {
+                    $temp            = $records[$j];
+                    $records[$j]     = $records[$j + 1];
+                    $records[$j + 1] = $temp;
+                }
+            }
+        }
+    }
 }
