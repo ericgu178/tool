@@ -16,7 +16,7 @@ class Request extends Base
      * @return void
      * @author EricGU178
      */
-    static public function requestPost(string $url, array $data)
+    static public function requestPost(string $url, array $data , $headers = [])
     {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -25,21 +25,15 @@ class Request extends Base
         curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']); // 模拟用户使用的浏览器
         $postMultipart = false;
         $postBodyString = '';
-        if(is_array($data) == true)
-        {
+        if(is_array($data) == true) {
             // Check each post field
-            foreach($data as $key => &$value)
-            {
+            foreach($data as $key => &$value) {
                 // Convert values for keys starting with '@' prefix
-                if ("@" != substr($value, 0, 1)) //判断是不是文件上传
-				{
-
+                if ("@" != substr($value, 0, 1)) { //判断是不是文件上传
 					$postBodyString .= "$key=" . urlencode($value) . "&";
 					// $postBodyString .= "$key=" . $value . "&";
                 }
-
-                if(strpos($value, '@') === 0)
-                {
+                if(strpos($value, '@') === 0) {
                     $postMultipart = true;
                     $filename = ltrim($value, '@');
                     $data[$key] = new \CURLFile($filename);
@@ -59,10 +53,10 @@ class Request extends Base
 
         // 看不懂 总之解决了 编码错误的问题
         if (!$postMultipart) {
-            $headers = array('content-type: application/x-www-form-urlencoded;charset=utf-8'); // 一个用来设置HTTP头字段的数组
+            array_push($headers,'content-type: application/x-www-form-urlencoded;charset=utf-8'); // 一个用来设置HTTP头字段的数组
             curl_setopt($curl, CURLOPT_HTTPHEADER, $headers); // 一个用来设置HTTP头字段的数组
         }
-
+        
         $response = curl_exec($curl); // 执行操作
         curl_close($curl); // 关闭CURL会话
 
