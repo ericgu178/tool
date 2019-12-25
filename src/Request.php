@@ -86,4 +86,25 @@ class Request extends Base
 
         return $response;
     }
+
+    /**
+     * 正常的post请求 不会上传文件的那种
+     *
+     * @return void
+     * @author EricGU178
+     */
+    static public function requestNormalPost(string $url, array $data, array $headers = [])
+    {
+        $data = json_encode($data,256);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // 跳过证书检查
+        curl_setopt($ch, CURLOPT_POST, 1);   // post数据
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);   // post的变量
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $res = curl_exec($ch);
+        curl_close($ch);
+        return $res;
+    }
 }
