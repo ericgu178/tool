@@ -107,7 +107,7 @@ class Logger extends Base
         }
         $ip      = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
         $content = $this->toString($content);
-
+        $date_time = date('Y-m-d H:i:s');
         // 开始写入
         try {
             if (is_dir($this->directory) === false) {
@@ -115,14 +115,12 @@ class Logger extends Base
             }
 
             // 构建写入字符串
-            $str = '';
-            $str .= $ip . ' | <h2 style="' . $this->getStyle($level) . ';display:inline-block">' . $this->header . "</h2>";
-            $str .= $content . "\n";
+            $str = "[记录时间] " . $date_time . "\t[操作IP] " . $ip . "\t——————————————————————————————————————\t" . $this->getHeaderStyle($level,$this->header) .  "\n";
+            $str .= $content . "\n" . $this->getHeaderStyle($level,'<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<') . "\n";
             // 日志
             $fp = fopen($this->directory . '/' . $file . self::SUFFIX, "a") or die("Unable to open file!");
             fwrite($fp, $str);
             fclose($fp);
-
         } catch (\Exception $e) {
             die($e->getMessage());
         }
@@ -144,26 +142,26 @@ class Logger extends Base
     }
 
     // 获取样式
-    private function getStyle($level)
+    private function getHeaderStyle($level,$header)
     {
-        $style = null;
+        $result = null;
         switch ($level) {
             case self::DEBUG:
-                $style = 'color:blue';
+                $result = "\033[1;36m " . $header . " \033[0m";
                 break;
             case self::INFO:
-                $style = 'color:green';
+                $result = "\033[1;32m " . $header . " \033[0m";
                 break;
             case self::NOTICE:
-                $style = 'color:purple';
+                $result = "\033[1;33m " . $header . " \033[0m";
                 break;
             case self::WARNING:
-                $style = 'color:orange';
+                $result = "\033[1;35m " . $header . " \033[0m";
                 break;
             case self::ERROR:
-                $style = 'color:red';
+                $result = "\033[1;31m " . $header . " \033[0m";
                 break;
         }
-        return $style;
+        return $result;
     }
 }
