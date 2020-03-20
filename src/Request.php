@@ -72,7 +72,7 @@ class Request extends Base
      * @return void
      * @author EricGU178
      */
-    static public function requestGet(string $url)
+    static public function requestGet(string $url, $headers = [])
     {
         $curl = curl_init();
         //设置选项，包括URL
@@ -80,7 +80,8 @@ class Request extends Base
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 1);//绕过ssl验证
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
-    
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
         //执行并获取HTML文档内容
         $response = curl_exec($curl);
         //释放curl句柄
@@ -91,13 +92,16 @@ class Request extends Base
 
     /**
      * 正常的post请求 不会上传文件的那种
+     * xml 请求需要传入headers   "Content-type: text/xml"
      *
      * @return void
      * @author EricGU178
      */
-    static public function requestNormalPost(string $url, array $data, array $headers = [])
+    static public function requestNormalPost(string $url, $data, array $headers = [])
     {
-        $data = json_encode($data,256);
+        if (is_array($data)) {
+            $data = json_encode($data,256);
+        }
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
