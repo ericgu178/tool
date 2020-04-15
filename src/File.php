@@ -9,15 +9,20 @@ use tool\Rand;
  */
 class File extends Base
 {
+    static public $dateFormat = [
+        '0'     =>  'Y', // 年
+        '1'     =>  'Ym', // 年月 
+        '2'     =>  'Ymd' // 年月日
+    ];
 
     public function __construct()
     {
         set_time_limit(0);
     }
 
-    static public function create($dir,$filename,$data)
+    static public function create($dir,$filename,$data,$type = 2)
     {
-        $date = Rand::formatDate('Ymd');
+        $date = Rand::formatDate(self::$dateFormat[$type]);
         $directory = $dir . '/' . $date;
         $file_path = $directory . '/' . $filename;
         if (!is_dir($directory)) {
