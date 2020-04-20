@@ -2,6 +2,7 @@
 namespace tool;
 
 use tool\Rand;
+use tool\Image\Compression;
 /**
  * 文件操作类
  *
@@ -20,7 +21,17 @@ class File extends Base
         set_time_limit(0);
     }
 
-    static public function create($dir,$filename,$data,$type = 2)
+    /**
+     * 创建文件
+     *
+     * @param 储存目录 $dir
+     * @param 文件名称 $filename
+     * @param 数据 $data
+     * @param integer $type 文件夹格式
+     * @return string
+     * @author EricGU178
+     */
+    static public function create($dir,$filename,$data,$type = 2, $percent = null):string
     {
         $date = Rand::formatDate(self::$dateFormat[$type]);
         $directory = $dir . '/' . $date;
@@ -31,6 +42,9 @@ class File extends Base
         $fp = fopen($file_path , 'a') or die("Unable to open file!");
         fwrite($fp, $data);
         fclose($fp);
+        if (!is_null($percent)) { // 压缩图片
+            Compression::init($file_path,$percent)->compressImg($file_path);
+        }
         return $file_path;
     }
 
