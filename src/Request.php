@@ -69,10 +69,13 @@ class Request extends Base
      * 发起get请求
      *
      * @param string $url
+     * @param array $headers
+     * @param bool $isProxy 是否代理
+     * @param string $proxy 代理
      * @return void
      * @author EricGU178
      */
-    static public function requestGet(string $url, $headers = [])
+    static public function requestGet(string $url, $headers = [],$isProxy = false , $proxy = '')
     {
         $curl = curl_init();
         //设置选项，包括URL
@@ -81,7 +84,10 @@ class Request extends Base
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 1);//绕过ssl验证
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-
+        if ($isProxy == true) {
+            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
+            curl_setopt($ch, CURLOPT_PROXY, $proxy);
+        }
         //执行并获取HTML文档内容
         $response = curl_exec($curl);
         //释放curl句柄
