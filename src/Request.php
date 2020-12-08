@@ -85,8 +85,8 @@ class Request extends Base
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         if ($isProxy == true) {
-            curl_setopt($ch, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
-            curl_setopt($ch, CURLOPT_PROXY, $proxy);
+            curl_setopt($curl, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);
+            curl_setopt($curl, CURLOPT_PROXY, $proxy);
         }
         //执行并获取HTML文档内容
         $response = curl_exec($curl);
