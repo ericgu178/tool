@@ -283,4 +283,38 @@ class Tool extends Base
             ),
         $str);
     }
+
+
+    /**
+     * 获取远程文件的大小
+     *
+     * @param string $url
+     * @param string $unit
+     * @return integer
+     * @author EricGU178
+     */
+    static public function getFileSize(string $url,string $unit = 'MB'):int
+    {
+        if(!isset($url) || trim($url)  ==  '') {
+            return 0;
+        }
+        ob_start(); // 开启缓冲区
+    
+        $ch = curl_init($url);
+        curl_setopt($ch,CURLOPT_HEADER,1); // 输出返回头信息
+        curl_setopt($ch,CURLOPT_NOBODY,1);
+        $okay = curl_exec($ch);
+        curl_close($ch);
+    
+        $head = ob_get_contents(); // 获取缓冲区内容
+        ob_end_clean(); // 清除缓冲区
+    
+        $regex  = '/Content-Length:\s([0-9].+?)\s/';
+        $count=preg_match($regex,$head,$matches);
+        $size = isset($matches[1]) && is_numeric($matches[1]) ? $matches[1] : 0;
+        if ($unit == 'MB') {
+            return sprintf("%.2f",$size / 1024 / 1024);
+        }
+        return $size;
+    }
 }
